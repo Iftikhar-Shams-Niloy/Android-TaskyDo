@@ -49,6 +49,9 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
+    implementation("androidx.glance:glance:1.2.0-alpha01")
+    implementation("androidx.glance:glance-appwidget:1.2.0-alpha01")
+
     // Dependencies for ROOM
     dependencies {
         val room_version = "2.5.0"

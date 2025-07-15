@@ -1,18 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="20dp"
-    android:padding="24dp">
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/ThemeOverlay.Material3.AutoCompleteTextView.OutlinedBox.Dense"
-        android:hint="Task!"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </com.google.android.material.textfield.TextInputLayout>
+    android:padding="24dp"
+    android:paddingBottom="10dp">
 
-</LinearLayout>
+    <EditText
+        android:id="@+id/edit_text_task_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:hint="@string/new_task"
+        android:inputType = "text"
+        android:importantForAutofill="no" />
+
+    <EditText
+        android:id="@+id/edit_text_task_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_task_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:hint="@string/task_description"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        android:inputType = "text"
+        android:importantForAutofill="no" />
+
+    <ImageButton
+        android:id="@+id/image_button_add_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_task_description"
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/dialog_add_details_button"
+        android:backgroundTint="@color/light_grey"
+        android:padding="12dp"
+        android:layout_margin="4dp"
+        android:src="@drawable/icon_description"/>
+
+    <ImageButton
+        android:id="@+id/image_button_star_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_task_description"
+        app:layout_constraintStart_toEndOf="@id/image_button_add_description"
+        android:contentDescription="@string/dialog_add_priority_button"
+        android:backgroundTint="@color/light_grey"
+        android:padding="12dp"
+        android:layout_margin="4dp"
+        android:src="@drawable/icon_star"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_save"
+        style="@style/Widget.Material3.Button.IconButton.Outlined"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_task_description"
+        app:layout_constraintEnd_toEndOf="@id/edit_text_task_title"
+        android:paddingVertical="15dp"
+        app:strokeWidth="4dp"
+        app:strokeColor="@color/light_grey"
+        android:text="@string/dialog_add_save_button" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

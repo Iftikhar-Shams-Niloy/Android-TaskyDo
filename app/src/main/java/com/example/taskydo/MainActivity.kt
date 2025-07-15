@@ -1,6 +1,8 @@
 package com.example.taskydo
 
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +10,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.glance.visibility
+import androidx.transition.ChangeBounds
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
+import androidx.transition.TransitionSet
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.taskydo.data.Task
 import com.example.taskydo.data.TaskyDatabase
@@ -35,11 +42,10 @@ class MainActivity : AppCompatActivity() {
             tab.text = "Tasks"
         }.attach()
 
-        binding.fab.setOnClickListener {
-            showAddTaskDialog()
-        }
+        binding.fab.setOnClickListener { showAddTaskDialog() }
 
-        val database = TaskyDatabase.createDatabase(this)
+        database = TaskyDatabase.createDatabase(this)
+
 
     }
 
@@ -47,6 +53,37 @@ class MainActivity : AppCompatActivity() {
         val dialogBinding = DialogAddTaskBinding.inflate(layoutInflater)
         val dialog = BottomSheetDialog(this)
         dialog.setContentView(dialogBinding.root)
+
+        dialogBinding.imageButtonAddDescription.setOnClickListener {
+            val descriptionEditText = dialogBinding.editTextTaskDescription
+            val animationDuration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+            if (descriptionEditText.visibility == View.VISIBLE) {
+                descriptionEditText.animate()
+                    .translationY(10f)
+                    .alpha(0f)
+                    .setDuration(animationDuration)
+                    .withEndAction { descriptionEditText.visibility = View.GONE }
+                    .start()
+            } else {
+                descriptionEditText.alpha = 0f
+                descriptionEditText.visibility = View.VISIBLE
+                descriptionEditText.animate()
+                    .translationY(-10f)
+                    .alpha(1f)
+                    .setDuration(animationDuration)
+                    .start()
+            }
+        }
+
+        dialogBinding.buttonSave.setOnClickListener {
+            val task = Task(
+                title = dialogBinding.editTextTaskTitle.text.toString(),
+                description = dialogBinding.editTextTaskDescription.text.toString()
+            )
+            thread { myTaskDao.createTask(task) }
+            dialog.dismiss()
+        }
+
         dialog.show()
     }
 

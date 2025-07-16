@@ -9,13 +9,20 @@ import androidx.room.RoomDatabase
 abstract class TaskyDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao
     companion object {
-        const val DATABASE_NAME = "tasky_database"
-        fun createDatabase(context: Context): TaskyDatabase{
-            return Room.databaseBuilder(
-                context,
-                TaskyDatabase::class.java,
-                TaskyDatabase.DATABASE_NAME
-            ).build()
+        @Volatile
+        private var DATABASE_INSTANCE: TaskyDatabase? = null
+        private const val DATABASE_NAME = "tasky_database"
+        fun getDatabase(context: Context): TaskyDatabase{
+            return DATABASE_INSTANCE ?: synchronized(this){  // IF NOT NULL RETURN THE "LEFT" PART | IF NULL THEN RUN THE "RIGHT" PART
+                val myInstance = Room.databaseBuilder(
+                    context,
+                    TaskyDatabase::class.java,
+                    DATABASE_NAME
+                ).build()
+                DATABASE_INSTANCE = myInstance
+                myInstance
+            }
+
         }
     }
 

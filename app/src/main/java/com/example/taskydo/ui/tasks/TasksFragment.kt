@@ -13,7 +13,7 @@ import kotlin.concurrent.thread
 
 class TasksFragment : Fragment() {
     private lateinit var binding: FragmentTasksBinding
-    private val taskDao: TaskDao by lazy { TaskyDatabase.createDatabase(requireContext()).taskDao() }
+    private val taskDao: TaskDao by lazy { TaskyDatabase.getDatabase(requireContext()).taskDao() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,6 +26,10 @@ class TasksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fetchAllTasks()
+    }
+
+    fun fetchAllTasks(){
         thread {
             val myTasks = taskDao.getAllTasks()
             requireActivity().runOnUiThread {

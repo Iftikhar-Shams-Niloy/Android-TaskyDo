@@ -38,7 +38,7 @@
         app:layout_constraintTop_toBottomOf="@id/edit_text_task_description"
         app:layout_constraintStart_toStartOf="parent"
         android:contentDescription="@string/dialog_add_details_button"
-        android:backgroundTint="@color/light_grey"
+        android:background="@android:color/transparent"
         android:padding="12dp"
         android:layout_margin="4dp"
         android:src="@drawable/icon_description"/>
@@ -50,10 +50,10 @@
         app:layout_constraintTop_toBottomOf="@id/edit_text_task_description"
         app:layout_constraintStart_toEndOf="@id/image_button_add_description"
         android:contentDescription="@string/dialog_add_priority_button"
-        android:backgroundTint="@color/light_grey"
+        android:background="@android:color/transparent"
         android:padding="12dp"
         android:layout_margin="4dp"
-        android:src="@drawable/icon_star"/>
+        android:src="@drawable/icon_star_selector"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_save"
@@ -64,7 +64,7 @@
         app:layout_constraintEnd_toEndOf="@id/edit_text_task_title"
         android:paddingVertical="15dp"
         app:strokeWidth="4dp"
-        app:strokeColor="@color/light_grey"
+        app:strokeColor="?attr/colorPrimary"
         android:text="@string/dialog_add_save_button" />
 
 

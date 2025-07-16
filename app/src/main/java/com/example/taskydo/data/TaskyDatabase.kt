@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Task::class], version = 1)
+@Database(entities = [Task::class], version = 2)
 abstract class TaskyDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao
     companion object {
@@ -18,7 +18,9 @@ abstract class TaskyDatabase : RoomDatabase() {
                     context,
                     TaskyDatabase::class.java,
                     DATABASE_NAME
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 DATABASE_INSTANCE = myInstance
                 myInstance
             }

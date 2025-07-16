@@ -11,9 +11,10 @@ import com.example.taskydo.data.TaskyDatabase
 import com.example.taskydo.databinding.FragmentTasksBinding
 import kotlin.concurrent.thread
 
-class TasksFragment : Fragment() {
+class TasksFragment : Fragment(), TasksAdapter.TaskUpdatedListener {
     private lateinit var binding: FragmentTasksBinding
     private val taskDao: TaskDao by lazy { TaskyDatabase.getDatabase(requireContext()).taskDao() }
+    private val adapter = TasksAdapter(this)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,6 +27,7 @@ class TasksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.recyclerViewTasks.adapter = adapter
         fetchAllTasks()
     }
 
@@ -33,8 +35,15 @@ class TasksFragment : Fragment() {
         thread {
             val myTasks = taskDao.getAllTasks()
             requireActivity().runOnUiThread {
-                binding.recyclerViewTasks.adapter = TasksAdapter(tasks = myTasks)
+                adapter.setTasks(myTasks)
             }
+        }
+    }
+
+    override fun onTaskUpdated(task: Task) {
+        thread {
+            taskDao.updateTask(task)
+            fetchAllTasks()
         }
     }
 }

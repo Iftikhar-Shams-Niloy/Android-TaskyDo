@@ -1,8 +1,11 @@
 package com.example.taskydo.ui
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -18,64 +21,65 @@ import kotlin.concurrent.thread
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var database: TaskyDatabase
+    private val database: TaskyDatabase by lazy { TaskyDatabase.getDatabase(this) }
     private val myTaskDao by lazy { database.taskDao() }
     private val tasksFragment: TasksFragment = TasksFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        binding.pager.adapter = PagerAdapter(this)
-        TabLayoutMediator(binding.tabs, binding.pager) {tab, position->
-            tab.text = "Tasks"
-        }.attach()
-
-        binding.fab.setOnClickListener { showAddTaskDialog() }
-
-        database = TaskyDatabase.getDatabase(this)
-
-
+        binding = ActivityMainBinding.inflate(layoutInflater).apply {
+            pager.adapter = PagerAdapter(this@MainActivity)
+            TabLayoutMediator(tabs, pager) { tab, _ ->
+                tab.text = "Tasks"
+            }.attach()
+            fab.setOnClickListener { showAddTaskDialog() }
+            setContentView(root)
+        }
     }
 
     private fun showAddTaskDialog() {
-        val dialogBinding = DialogAddTaskBinding.inflate(layoutInflater)
-        val dialog = BottomSheetDialog(this)
-        dialog.setContentView(dialogBinding.root)
+        DialogAddTaskBinding.inflate(layoutInflater).apply {
+            val dialog = BottomSheetDialog(this@MainActivity)
+            dialog.setContentView(root)
 
-        dialogBinding.imageButtonAddDescription.setOnClickListener {
-            val descriptionEditText = dialogBinding.editTextTaskDescription
-            val animationDuration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
-            if (descriptionEditText.visibility == View.VISIBLE) {
-                descriptionEditText.animate()
-                    .translationY(10f)
-                    .alpha(0f)
-                    .setDuration(animationDuration)
-                    .withEndAction { descriptionEditText.visibility = View.GONE }
-                    .start()
-            } else {
-                descriptionEditText.alpha = 0f
-                descriptionEditText.visibility = View.VISIBLE
-                descriptionEditText.animate()
-                    .translationY(-10f)
-                    .alpha(1f)
-                    .setDuration(animationDuration)
-                    .start()
+            buttonSave.isEnabled = false
+            editTextTaskTitle.addTextChangedListener { inputTitle ->
+                buttonSave.isEnabled = !inputTitle?.trim().isNullOrEmpty()
             }
-        }
 
-        dialogBinding.buttonSave.setOnClickListener {
-            val task = Task(
-                title = dialogBinding.editTextTaskTitle.text.toString(),
-                description = dialogBinding.editTextTaskDescription.text.toString()
-            )
-            thread { myTaskDao.createTask(task) }
-            dialog.dismiss()
-            tasksFragment.fetchAllTasks()
-        }
+            imageButtonAddDescription.setOnClickListener {
+                val descriptionEditText = editTextTaskDescription
+                val animationDuration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+                if (descriptionEditText.visibility == View.VISIBLE) {
+                    descriptionEditText.animate()
+                        .translationY(10f)
+                        .alpha(0f)
+                        .setDuration(animationDuration)
+                        .withEndAction { descriptionEditText.visibility = View.GONE }
+                        .start()
+                } else {
+                    descriptionEditText.alpha = 0f
+                    descriptionEditText.visibility = View.VISIBLE
+                    descriptionEditText.animate()
+                        .translationY(-10f)
+                        .alpha(1f)
+                        .setDuration(animationDuration)
+                        .start()
+                }
+            }
 
-        dialog.show()
+            buttonSave.setOnClickListener {
+                val task = Task(
+                    title = editTextTaskTitle.text.toString(),
+                    description = editTextTaskDescription.text.toString()
+                )
+                thread { myTaskDao.createTask(task) }
+                dialog.dismiss()
+                tasksFragment.fetchAllTasks()
+            }
+
+            dialog.show()
+        }
     }
 
     inner class PagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {

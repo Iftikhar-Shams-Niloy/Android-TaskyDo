@@ -14,4 +14,11 @@ class ExampleUnitTest {
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
     }
+
+    @Test
+    fun substraction_isCorrect(){
+        val result = 10-2
+        assertEquals(8, result)
+    }
+
 }

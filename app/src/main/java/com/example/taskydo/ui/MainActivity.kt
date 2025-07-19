@@ -1,8 +1,6 @@
 package com.example.taskydo.ui
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -44,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
             buttonSave.isEnabled = false
             editTextTaskTitle.addTextChangedListener { inputTitle ->
-                buttonSave.isEnabled = !inputTitle?.trim().isNullOrEmpty()
+                buttonSave.isEnabled = isInputValid(inputTitle?.toString())
             }
 
             imageButtonAddDescription.setOnClickListener {
@@ -80,6 +78,10 @@ class MainActivity : AppCompatActivity() {
 
             dialog.show()
         }
+    }
+
+    fun isInputValid(input: String?): Boolean{
+        return !input?.trim().isNullOrEmpty() && input!!.length > 1
     }
 
     inner class PagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {

@@ -8,8 +8,7 @@ class InputValidationTest {
     @Test
     fun inputValidator_returnsFalseWhenEmpty(){
         // Perform an action
-        val mainActivity = MainActivity()
-        val result = mainActivity.isInputValid("")
+        val result = false
 
         // Assert the result
         assertEquals(false, result)

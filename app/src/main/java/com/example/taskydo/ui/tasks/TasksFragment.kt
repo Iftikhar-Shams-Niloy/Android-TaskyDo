@@ -5,15 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.example.taskydo.data.Task
 import com.example.taskydo.data.TaskDao
 import com.example.taskydo.data.TaskyDatabase
 import com.example.taskydo.databinding.FragmentTasksBinding
+import com.example.taskydo.util.TaskydoApplication.Companion.taskDao
 import kotlin.concurrent.thread
 
 class TasksFragment : Fragment(), TasksAdapter.TaskItemClickListener {
+
+    private val viewModel: TasksViewModel by viewModels()
     private lateinit var binding: FragmentTasksBinding
-    private val taskDao: TaskDao by lazy { TaskyDatabase.getDatabase(requireContext()).taskDao() }
     private val adapter = TasksAdapter(this)
 
     override fun onCreateView(
@@ -32,25 +35,18 @@ class TasksFragment : Fragment(), TasksAdapter.TaskItemClickListener {
     }
 
     fun fetchAllTasks(){
-        thread {
-            val myTasks = taskDao.getAllTasks()
+        viewModel.fetchTasks { tasks ->
             requireActivity().runOnUiThread {
-                adapter.setTasks(myTasks)
+                adapter.setTasks(tasks)
             }
         }
     }
 
     override fun onTaskUpdated(task: Task) {
-        thread {
-            taskDao.updateTask(task)
-            fetchAllTasks()
-        }
+        viewModel.updateTask(task)
     }
 
     override fun onTaskDeleted(task: Task) {
-        thread {
-            taskDao.deleteTask(task)
-            fetchAllTasks()
-        }
+        viewModel.deleteTask(task)
     }
 }

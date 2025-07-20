@@ -2,6 +2,8 @@ package com.example.taskydo.ui
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -12,15 +14,19 @@ import com.example.taskydo.data.TaskyDatabase
 import com.example.taskydo.databinding.ActivityMainBinding
 import com.example.taskydo.databinding.DialogAddTaskBinding
 import com.example.taskydo.ui.tasks.TasksFragment
+import com.example.taskydo.util.TaskydoApplication.Companion.taskDao
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
-    private val database: TaskyDatabase by lazy { TaskyDatabase.getDatabase(this) }
-    private val myTaskDao by lazy { database.taskDao() }
     private val tasksFragment: TasksFragment = TasksFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +39,24 @@ class MainActivity : AppCompatActivity() {
             fab.setOnClickListener { showAddTaskDialog() }
             setContentView(root)
         }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            startTitleTicker()
+        }
+
     }
+
+    suspend fun startTitleTicker(){
+        var count = 1
+        while (true){
+            delay(1000)
+            binding.toolbar.title = "Seconds: $count"
+            count++
+        }
+
+
+    }
+
 
     private fun showAddTaskDialog() {
         DialogAddTaskBinding.inflate(layoutInflater).apply {
@@ -67,11 +90,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             buttonSave.setOnClickListener {
-                val task = Task(
-                    title = editTextTaskTitle.text.toString(),
-                    description = editTextTaskDescription.text.toString()
-                )
-                thread { myTaskDao.createTask(task) }
+                viewModel.createTask(
+                    editTextTaskTitle.text.toString(),
+                    editTextTaskDescription.text.toString()
+                    )
                 dialog.dismiss()
                 tasksFragment.fetchAllTasks()
             }

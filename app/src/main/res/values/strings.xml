@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Taskydo</string>
+    <string name="app_name">TaskyDo</string>
     <string name="new_task">New Task!</string>
     <string name="task_description">Task Description</string>
     <string name="dialog_add_details_button">Add Details</string>

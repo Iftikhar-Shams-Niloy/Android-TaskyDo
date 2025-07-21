@@ -2,26 +2,21 @@ package com.example.taskydo.ui
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.taskydo.data.Task
-import com.example.taskydo.data.TaskyDatabase
 import com.example.taskydo.databinding.ActivityMainBinding
 import com.example.taskydo.databinding.DialogAddTaskBinding
 import com.example.taskydo.ui.tasks.TasksFragment
-import com.example.taskydo.util.TaskydoApplication.Companion.taskDao
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 

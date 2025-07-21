@@ -6,12 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.taskydo.data.Task
-import com.example.taskydo.data.TaskDao
-import com.example.taskydo.data.TaskyDatabase
 import com.example.taskydo.databinding.FragmentTasksBinding
-import com.example.taskydo.util.TaskydoApplication.Companion.taskDao
-import kotlin.concurrent.thread
+import kotlinx.coroutines.launch
+
 
 class TasksFragment : Fragment(), TasksAdapter.TaskItemClickListener {
 
@@ -35,10 +34,9 @@ class TasksFragment : Fragment(), TasksAdapter.TaskItemClickListener {
     }
 
     fun fetchAllTasks(){
-        viewModel.fetchTasks { tasks ->
-            requireActivity().runOnUiThread {
-                adapter.setTasks(tasks)
-            }
+        lifecycleScope.launch {
+            val tasks: List<Task> = viewModel.fetchTasks()
+            adapter.setTasks(tasks)
         }
     }
 

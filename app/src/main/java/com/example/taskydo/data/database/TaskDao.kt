@@ -1,10 +1,11 @@
-package com.example.taskydo.data
+package com.example.taskydo.data.database
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import com.example.taskydo.data.model.Task
 
 @Dao
 interface TaskDao {

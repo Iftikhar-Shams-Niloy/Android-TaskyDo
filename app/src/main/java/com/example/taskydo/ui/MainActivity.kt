@@ -13,10 +13,6 @@ import com.example.taskydo.databinding.DialogAddTaskBinding
 import com.example.taskydo.ui.tasks.TasksFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,23 +30,8 @@ class MainActivity : AppCompatActivity() {
             fab.setOnClickListener { showAddTaskDialog() }
             setContentView(root)
         }
-
-        CoroutineScope(Dispatchers.Main).launch {
-            startTitleTicker()
-        }
-
     }
 
-    suspend fun startTitleTicker(){
-        var count = 1
-        while (true){
-            delay(1000)
-            binding.toolbar.title = "Seconds: $count"
-            count++
-        }
-
-
-    }
 
 
     private fun showAddTaskDialog() {
@@ -92,7 +73,6 @@ class MainActivity : AppCompatActivity() {
                 dialog.dismiss()
                 tasksFragment.fetchAllTasks()
             }
-
             dialog.show()
         }
     }
@@ -106,7 +86,5 @@ class MainActivity : AppCompatActivity() {
         override fun createFragment(position: Int): Fragment {
             return tasksFragment
         }
-
     }
-
 }

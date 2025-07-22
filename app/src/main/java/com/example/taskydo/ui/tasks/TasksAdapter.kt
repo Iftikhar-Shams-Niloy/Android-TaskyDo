@@ -4,9 +4,8 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.taskydo.data.Task
+import com.example.taskydo.data.model.Task
 import com.example.taskydo.databinding.ItemTaskBinding
 
 class TasksAdapter( private val listener: TaskItemClickListener) :  RecyclerView.Adapter<TasksAdapter.ViewHolder>() {

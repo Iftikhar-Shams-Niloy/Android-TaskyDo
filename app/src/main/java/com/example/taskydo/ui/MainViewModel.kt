@@ -1,20 +1,22 @@
 package com.example.taskydo.ui
 import androidx.lifecycle.ViewModel
-import com.example.taskydo.data.Task
+import androidx.lifecycle.viewModelScope
+import com.example.taskydo.data.TaskRepository
+import com.example.taskydo.data.model.Task
 import com.example.taskydo.util.TaskydoApplication
-import kotlin.concurrent.thread
+import kotlinx.coroutines.launch
 
 
 class MainViewModel : ViewModel() {
 
-    val taskDao = TaskydoApplication.taskDao
+    private val repository : TaskRepository = TaskydoApplication.taskRepository
 
     fun createTask(title: String, description: String?){
         val task = Task(
             title = title,
             description = description
         )
-        thread { taskDao.createTask(task) }
+        viewModelScope.launch { repository.createTask(task) }
     }
 
 }

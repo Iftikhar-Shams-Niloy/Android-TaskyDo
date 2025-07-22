@@ -1,13 +1,14 @@
 package com.example.taskydo.ui.tasks
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.example.taskydo.data.Task
+import com.example.taskydo.data.model.Task
 import com.example.taskydo.databinding.FragmentTasksBinding
 import kotlinx.coroutines.launch
 
@@ -36,15 +37,18 @@ class TasksFragment : Fragment(), TasksAdapter.TaskItemClickListener {
     fun fetchAllTasks(){
         lifecycleScope.launch {
             val tasks: List<Task> = viewModel.fetchTasks()
+            Log.d("NILOY!", "Tasks fetched: $tasks")
             adapter.setTasks(tasks)
         }
     }
 
     override fun onTaskUpdated(task: Task) {
         viewModel.updateTask(task)
+        fetchAllTasks()
     }
 
     override fun onTaskDeleted(task: Task) {
         viewModel.deleteTask(task)
+        fetchAllTasks()
     }
 }

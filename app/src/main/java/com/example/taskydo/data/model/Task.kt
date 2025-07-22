@@ -1,4 +1,4 @@
-package com.example.taskydo.data
+package com.example.taskydo.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

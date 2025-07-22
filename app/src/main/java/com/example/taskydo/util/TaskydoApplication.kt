@@ -1,20 +1,20 @@
 package com.example.taskydo.util
 
 import android.app.Application
-import com.example.taskydo.data.TaskDao
-import com.example.taskydo.data.TaskyDatabase
+import com.example.taskydo.data.TaskRepository
+import com.example.taskydo.data.database.TaskyDatabase
 
 class TaskydoApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        database = TaskyDatabase.getDatabase(this)
-        taskDao = database.taskDao()
+        val database = TaskyDatabase.getDatabase(this)
+        val taskDao = database.taskDao()
+        taskRepository = TaskRepository(taskDao)
     }
 
     companion object {
-        lateinit var database: TaskyDatabase
-        lateinit var taskDao: TaskDao
+        lateinit var taskRepository: TaskRepository
 
     }
 }

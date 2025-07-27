@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.taskydo.data.model.Task
 import com.example.taskydo.databinding.ItemTaskBinding
 
-class TasksAdapter( private val listener: TaskItemClickListener) :  RecyclerView.Adapter<TasksAdapter.ViewHolder>() {
+class TasksAdapter( private val listener: TasksFragment) :  RecyclerView.Adapter<TasksAdapter.ViewHolder>() {
 
     private var tasks: List<Task> = listOf()
 

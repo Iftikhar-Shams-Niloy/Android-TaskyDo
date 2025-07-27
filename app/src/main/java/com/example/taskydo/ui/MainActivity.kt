@@ -24,8 +24,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater).apply {
             pager.adapter = PagerAdapter(this@MainActivity)
-            TabLayoutMediator(tabs, pager) { tab, _ ->
-                tab.text = "Tasks"
+            pager.currentItem = 0
+            TabLayoutMediator(tabs, pager) { tab, position ->
+                when (position){
+                    0 -> tab.text = "Starred"
+                    1 -> tab.text = "Tasks"
+                    2 -> tab.text = "Completed"
+                }
             }.attach()
             fab.setOnClickListener { showAddTaskDialog() }
             setContentView(root)
@@ -82,9 +87,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class PagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
-        override fun getItemCount() = 1
+        override fun getItemCount() = 3
         override fun createFragment(position: Int): Fragment {
-            return tasksFragment
+            return TasksFragment()
         }
     }
 }

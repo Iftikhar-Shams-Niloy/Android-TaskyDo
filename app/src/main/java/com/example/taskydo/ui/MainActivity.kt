@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.taskydo.databinding.ActivityMainBinding
 import com.example.taskydo.databinding.DialogAddTaskBinding
+import com.example.taskydo.ui.tasks.PriorityTasksFragment
 import com.example.taskydo.ui.tasks.TasksFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayoutMediator
@@ -27,8 +28,8 @@ class MainActivity : AppCompatActivity() {
             pager.currentItem = 0
             TabLayoutMediator(tabs, pager) { tab, position ->
                 when (position){
-                    0 -> tab.text = "Starred"
-                    1 -> tab.text = "Tasks"
+                    0 -> tab.text = "Priority"
+                    1 -> tab.text = "General"
                     2 -> tab.text = "Completed"
                 }
             }.attach()
@@ -89,7 +90,10 @@ class MainActivity : AppCompatActivity() {
     inner class PagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
         override fun getItemCount() = 3
         override fun createFragment(position: Int): Fragment {
-            return TasksFragment()
+            return when (position){
+                0 -> PriorityTasksFragment()
+                else -> TasksFragment()
+            }
         }
     }
 }

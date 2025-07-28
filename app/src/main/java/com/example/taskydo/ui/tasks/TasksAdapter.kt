@@ -8,7 +8,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.taskydo.data.model.Task
 import com.example.taskydo.databinding.ItemTaskBinding
 
-class TasksAdapter( private val listener: TasksFragment) :  RecyclerView.Adapter<TasksAdapter.ViewHolder>() {
+
+interface TaskItemClickListener {
+
+    fun onTaskUpdated(task: Task)
+
+    fun onTaskDeleted(task: Task)
+}
+
+
+class TasksAdapter( private val listener: TaskItemClickListener) :  RecyclerView.Adapter<TasksAdapter.ViewHolder>() {
 
     private var tasks: List<Task> = listOf()
 
@@ -67,13 +76,6 @@ class TasksAdapter( private val listener: TasksFragment) :  RecyclerView.Adapter
             }
 
         }
-    }
-
-    interface TaskItemClickListener {
-
-        fun onTaskUpdated(task: Task)
-        
-        fun onTaskDeleted(task: Task)
     }
 
 }

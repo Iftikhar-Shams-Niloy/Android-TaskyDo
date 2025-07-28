@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
-class TasksFragment : Fragment(), TasksAdapter.TaskItemClickListener {
+class TasksFragment : Fragment(), TaskItemClickListener {
 
     private val viewModel: TasksViewModel by viewModels()
     private lateinit var binding: FragmentTasksBinding

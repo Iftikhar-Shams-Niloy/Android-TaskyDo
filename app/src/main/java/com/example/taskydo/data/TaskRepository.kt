@@ -21,4 +21,8 @@ class TaskRepository(private val taskDao: TaskDao){
     suspend fun deleteTask(task: Task){
         taskDao.deleteTask(task)
     }
+
+    fun getPriorityTasks(): Flow<List<Task>> {
+        return taskDao.getPriorityTasks()
+    }
 }

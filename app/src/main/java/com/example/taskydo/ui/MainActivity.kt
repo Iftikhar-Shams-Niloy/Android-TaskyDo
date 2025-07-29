@@ -2,11 +2,13 @@ package com.example.taskydo.ui
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.taskydo.databinding.ActivityMainBinding
 import com.example.taskydo.databinding.DialogAddTaskBinding
@@ -14,6 +16,8 @@ import com.example.taskydo.ui.tasks.PriorityTasksFragment
 import com.example.taskydo.ui.tasks.TasksFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,21 +28,25 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater).apply {
-            pager.adapter = PagerAdapter(this@MainActivity)
-            pager.currentItem = 0
-            TabLayoutMediator(tabs, pager) { tab, position ->
-                when (position){
-                    0 -> tab.text = "Priority"
-                    1 -> tab.text = "General"
-                    2 -> tab.text = "Completed"
+            lifecycleScope.launch {
+                viewModel.getTaskLists().collectLatest { taskLists ->
+                    pager.adapter = PagerAdapter(this@MainActivity, taskLists.size+2)
+                    pager.currentItem = 1
+                    TabLayoutMediator(tabs, pager) { tab, position ->
+                        when (position){
+                            0 -> tab.text = "Priority"
+                            taskLists.size+1 -> tab.customView = Button(this@MainActivity).apply {
+                                this.text = "Add New"
+                            }
+                            else -> tab.text = taskLists[position-1].name
+                        }
+                    }.attach()
                 }
-            }.attach()
+            }
             fab.setOnClickListener { showAddTaskDialog() }
             setContentView(root)
         }
     }
-
-
 
     private fun showAddTaskDialog() {
         DialogAddTaskBinding.inflate(layoutInflater).apply {
@@ -83,12 +91,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun isInputValid(input: String?): Boolean{
+    private fun isInputValid(input: String?): Boolean{
         return !input?.trim().isNullOrEmpty() && input!!.length > 1
     }
 
-    inner class PagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
-        override fun getItemCount() = 3
+    inner class PagerAdapter(activity: FragmentActivity, private val numOfPages: Int) : FragmentStateAdapter(activity) {
+        override fun getItemCount() = numOfPages
         override fun createFragment(position: Int): Fragment {
             return when (position){
                 0 -> PriorityTasksFragment()

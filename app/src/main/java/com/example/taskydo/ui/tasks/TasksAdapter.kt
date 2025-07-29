@@ -57,13 +57,12 @@ class TasksAdapter( private val listener: TaskItemClickListener) :  RecyclerView
                 }
                 starCheckbox.isChecked = task.isStarred
                 textViewTitle.text = task.title
+                textViewDescription.visibility = View.GONE
                 if (task.description.isNullOrEmpty()){
-                    textViewDescription.visibility = View.GONE
                 } else {
                     textViewDescription.text = task.description
                     textViewDescription.visibility = View.VISIBLE
                 }
-                textViewDescription.text = task.description
                 checkBox.setOnClickListener {
                     val updatedTask = task.copy(isCompleted = checkBox.isChecked)
                     listener.onTaskUpdated(updatedTask)
@@ -72,10 +71,7 @@ class TasksAdapter( private val listener: TaskItemClickListener) :  RecyclerView
                     val updatedTask = task.copy(isStarred = starCheckbox.isChecked)
                     listener.onTaskUpdated(updatedTask)
                 }
-
             }
-
         }
     }
-
 }

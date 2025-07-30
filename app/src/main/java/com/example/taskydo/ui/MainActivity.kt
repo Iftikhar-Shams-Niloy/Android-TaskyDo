@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.taskydo.data.model.TaskList
 import com.example.taskydo.databinding.ActivityMainBinding
 import com.example.taskydo.databinding.DialogAddTaskBinding
 import com.example.taskydo.ui.tasks.PriorityTasksFragment
@@ -24,12 +25,14 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
     private val tasksFragment: TasksFragment = TasksFragment()
+    private var currentTaskList: List<TaskList> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater).apply {
             lifecycleScope.launch {
                 viewModel.getTaskLists().collectLatest { taskLists ->
+
                     pager.adapter = PagerAdapter(this@MainActivity, taskLists.size+2)
                     pager.currentItem = 1
                     TabLayoutMediator(tabs, pager) { tab, position ->
@@ -79,10 +82,14 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            binding.pager.currentItem
+
             buttonSave.setOnClickListener {
+                val selectedTaskListId = currentTaskList[binding.pager.currentItem - 1].id
                 viewModel.createTask(
-                    editTextTaskTitle.text.toString(),
-                    editTextTaskDescription.text.toString()
+                    title =editTextTaskTitle.text.toString(),
+                    description = editTextTaskDescription.text.toString(),
+                    listId = selectedTaskListId
                     )
                 dialog.dismiss()
                 tasksFragment.fetchAllTasks()
